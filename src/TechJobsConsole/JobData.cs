@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace TechJobsConsole
@@ -33,9 +32,11 @@ namespace TechJobsConsole
                 if (!values.Contains(aValue))
                 {
                     values.Add(aValue);
+                    values.Sort();
                 }
             }
             return values;
+
         }
 
         public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
@@ -48,10 +49,36 @@ namespace TechJobsConsole
             foreach (Dictionary<string, string> row in AllJobs)
             {
                 string aValue = row[column];
+                aValue = aValue.ToLower();
+                value = value.ToLower();
 
                 if (aValue.Contains(value))
                 {
                     jobs.Add(row);
+                }
+            }
+
+            return jobs;
+        }
+
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            // load data, if not already loaded
+            LoadData();
+
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            foreach (Dictionary<string, string> job in AllJobs)
+            {
+                foreach (KeyValuePair<string, string> kvp in job)
+                {
+                    string kValue = kvp.Value;
+                    kValue = kValue.ToLower();
+                    value = value.ToLower();
+                    if ((kValue.Contains(value)) && (!jobs.Contains(job)))
+                    {
+                        jobs.Add(job);
+                    }
                 }
             }
 
